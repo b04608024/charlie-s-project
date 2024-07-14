@@ -1,1 +1,6 @@
-"flask\nline-bot-sdk\nschedule\nrequests\npytz" 
+flask
+line-bot-sdk
+schedule
+requests
+pytz
+
