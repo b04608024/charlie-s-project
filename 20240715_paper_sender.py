@@ -42,6 +42,8 @@ def handle_message(event):
     app.logger.info('Received message: %s', text)
     global num_articles
     global notification_time
+    reply = ""
+
     if text.startswith("keyword:"):
         keyword = text.split(":", 1)[1].strip()
         keywords.append(keyword)
@@ -67,13 +69,20 @@ def handle_message(event):
     elif text.startswith("time:"):
         notification_time = text.split(":", 1)[1].strip()
         reply = f"Notification time set to {notification_time}."
+        app.logger.info('Notification time set to: %s', notification_time)
     elif text.startswith("num articles:"):
         num_articles = int(text.split(":", 1)[1].strip())
         reply = f"Number of articles to send set to {num_articles}."
+        app.logger.info('Number of articles set to: %d', num_articles)
     else:
         reply = ("Please send a valid command (e.g., 'keyword: DNA', 'journal: Nature', "
                  "'remove keyword: DNA', 'remove journal: Nature', 'time: 09:00', 'num articles: 2').")
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
+
+    if reply:
+        app.logger.info('Sending reply: %s', reply)
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
+    else:
+        app.logger.error('No valid command found in message: %s', text)
 
 def search_articles():
     if not keywords:
