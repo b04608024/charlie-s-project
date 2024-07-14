@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "line-bot"
+name = "charlie-s-project"
 version = "0.1.0"
-description = ""
+description = "A Line bot for scientific articles"
 authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
@@ -14,4 +14,5 @@ requests = "^2.25.1"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
 
