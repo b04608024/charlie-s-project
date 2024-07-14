@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: line-bot-service
+    env: python
+    buildCommand: "poetry install"
+    startCommand: "poetry run python 20240715_paper_sender.py"
