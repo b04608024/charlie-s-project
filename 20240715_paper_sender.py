@@ -2,7 +2,7 @@ import subprocess
 import sys
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 # Function to list installed packages
 def list_installed_packages():
@@ -10,8 +10,6 @@ def list_installed_packages():
     print('Installed packages: \n{}'.format(installed_packages.decode('utf-8')))
 
 list_installed_packages()
-
-import pytz
 
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
@@ -32,7 +30,6 @@ keywords = ["bioinformatics"]  # Default keyword
 target_journals = ["Nature", "Science", "Cell", "EMBO", "PNAS"]
 num_articles = 3  # Default number of articles to send per day
 notification_time = "09:00"  # Default notification time
-local_tz = pytz.timezone('Asia/Taipei')  # Set your local timezone here
 
 @app.route("/")
 def index():
@@ -137,12 +134,12 @@ def job():
     app.logger.info("Running scheduled job")
     search_articles()
 
-def convert_to_utc(local_time_str, local_tz):
-    local_time = datetime.strptime(local_time_str, '%H:%M').replace(tzinfo=local_tz)
-    utc_time = local_time.astimezone(pytz.utc)
+def convert_to_utc(local_time_str):
+    local_time = datetime.strptime(local_time_str, '%H:%M').replace(tzinfo=timezone(timedelta(hours=8)))  # Asia/Taipei is UTC+8
+    utc_time = local_time.astimezone(timezone.utc)
     return utc_time.strftime('%H:%M')
 
-utc_notification_time = convert_to_utc(notification_time, local_tz)
+utc_notification_time = convert_to_utc(notification_time)
 app.logger.info("Scheduled job time in UTC: %s", utc_notification_time)
 schedule.every().day.at(utc_notification_time).do(job)
 
