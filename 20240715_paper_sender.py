@@ -48,24 +48,30 @@ def handle_message(event):
         keyword = text.split(":", 1)[1].strip()
         keywords.append(keyword)
         reply = f"Keyword '{keyword}' added."
+        app.logger.info('Added keyword: %s', keyword)
     elif text.startswith("journal:"):
         journal = text.split(":", 1)[1].strip()
         target_journals.append(journal)
         reply = f"Journal '{journal}' added."
+        app.logger.info('Added journal: %s', journal)
     elif text.startswith("remove keyword:"):
         keyword = text.split(":", 1)[1].strip()
         if keyword in keywords:
             keywords.remove(keyword)
             reply = f"Keyword '{keyword}' removed."
+            app.logger.info('Removed keyword: %s', keyword)
         else:
             reply = f"Keyword '{keyword}' not found."
+            app.logger.info('Keyword not found: %s', keyword)
     elif text.startswith("remove journal:"):
         journal = text.split(":", 1)[1].strip()
         if journal in target_journals:
             target_journals.remove(journal)
             reply = f"Journal '{journal}' removed."
+            app.logger.info('Removed journal: %s', journal)
         else:
             reply = f"Journal '{journal}' not found."
+            app.logger.info('Journal not found: %s', journal)
     elif text.startswith("time:"):
         notification_time = text.split(":", 1)[1].strip()
         reply = f"Notification time set to {notification_time}."
@@ -77,6 +83,7 @@ def handle_message(event):
     else:
         reply = ("Please send a valid command (e.g., 'keyword: DNA', 'journal: Nature', "
                  "'remove keyword: DNA', 'remove journal: Nature', 'time: 09:00', 'num articles: 2').")
+        app.logger.info('Invalid command received: %s', text)
 
     if reply:
         app.logger.info('Sending reply: %s', reply)
