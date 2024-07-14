@@ -20,6 +20,10 @@ target_journals = ["Nature", "Science", "Cell", "EMBO", "PNAS"]
 num_articles = 3  # Default number of articles to send per day
 notification_time = "09:00"  # Default notification time
 
+@app.route("/")
+def index():
+    return "Line bot is running."
+
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
