@@ -1,3 +1,17 @@
+import subprocess
+import logging
+import os
+from datetime import datetime
+
+# Function to list installed packages
+def list_installed_packages():
+    installed_packages = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze'])
+    print('Installed packages: \n{}'.format(installed_packages.decode('utf-8')))
+
+list_installed_packages()
+
+import pytz
+
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -5,10 +19,6 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 import schedule
 import time
 import requests
-import os
-import logging
-from datetime import datetime
-import pytz
 
 app = Flask(__name__)
 
