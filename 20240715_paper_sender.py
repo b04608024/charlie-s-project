@@ -7,6 +7,8 @@ import time
 import requests
 import os
 import logging
+from datetime import datetime
+import pytz
 
 app = Flask(__name__)
 
@@ -19,6 +21,7 @@ keywords = ["bioinformatics"]  # Default keyword
 target_journals = ["Nature", "Science", "Cell", "EMBO", "PNAS"]
 num_articles = 3  # Default number of articles to send per day
 notification_time = "09:00"  # Default notification time
+local_tz = pytz.timezone('Asia/Taipei')  # Set your local timezone here
 
 @app.route("/")
 def index():
@@ -120,9 +123,17 @@ def fetch_article(article_id):
         app.logger.error("Error fetching article %s: %s", article_id, response.text)
 
 def job():
+    app.logger.info("Running scheduled job")
     search_articles()
 
-schedule.every().day.at(notification_time).do(job)
+def convert_to_utc(local_time_str, local_tz):
+    local_time = datetime.strptime(local_time_str, '%H:%M').replace(tzinfo=local_tz)
+    utc_time = local_time.astimezone(pytz.utc)
+    return utc_time.strftime('%H:%M')
+
+utc_notification_time = convert_to_utc(notification_time, local_tz)
+app.logger.info("Scheduled job time in UTC: %s", utc_notification_time)
+schedule.every().day.at(utc_notification_time).do(job)
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
